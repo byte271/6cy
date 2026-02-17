@@ -1,3 +1,12 @@
+
+> [!IMPORTANT]
+> 6cy is under active development and is not yet stable.
+> The file format and APIs may change without notice.
+
+> [!NOTE]
+> This project is intended for benchmarking, research, and ecosystem prototyping.
+> It is not recommended for production use yet.
+
 # Sixcy: High-Performance Streaming Container
 
 Sixcy is a modern, efficient, and robust container format designed for high-performance data storage and transmission. It is built with a focus on streaming efficiency, data recoverability, and flexible compression strategies.
