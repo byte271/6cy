@@ -115,7 +115,7 @@ sixcy/
 ### Build
 
 ```bash
-git clone https://github.com/cyh/sixcy.git
+git clone https://github.com/byte271/sixcy.git
 cd sixcy
 cargo build --release
 # binary: target/release/6cy  (Linux/macOS)
