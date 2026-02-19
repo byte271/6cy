@@ -363,6 +363,12 @@ the vulnerability disclosure policy.
 
 ---
 
+## Container Format Specification
+
+See [`spec.md`](spec.md).
+
+---
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md).
