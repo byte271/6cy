@@ -154,9 +154,9 @@ cargo build --release
 
 ```bash
 6cy list archive.6cy
-# Name                       Size    Compressed  Chunks  First block hash
-# readme.txt                 4096          1024       1  a1b2c3...
-# data.bin              10485760       2097152       3  deadbe...
+# Name                       Size    Compressed  
+# readme.txt                 4096          1024  
+# data.bin              10485760       2097152   
 ```
 
 ### `info` — archive metadata
