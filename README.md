@@ -115,8 +115,8 @@ sixcy/
 ### Build
 
 ```bash
-git clone https://github.com/cyh/sixcy.git
-cd sixcy
+git clone https://github.com/byte271/6cy.git
+cd 6cy
 cargo build --release
 # binary: target/release/6cy  (Linux/macOS)
 # binary: target\release\6cy.exe  (Windows)
@@ -379,3 +379,4 @@ The **format specification** (`spec.md`) is licensed under
 **[CC BY 4.0](LICENSE-SPEC)** — you may implement the format in any language
 and share implementations freely, provided you attribute the original
 specification.
+
