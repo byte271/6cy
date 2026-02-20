@@ -5,7 +5,7 @@
 **License:** [CC BY 4.0](LICENSE-SPEC) — Creative Commons Attribution 4.0 International
 
 > © 2026 Cyh. You are free to share and adapt this specification provided you
-> give appropriate credit. See `LICENSE-SPEC` for the full license text.
+> give appropriate credit.
 
 ---
 
