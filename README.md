@@ -107,6 +107,10 @@ sixcy/
 
 ## Getting Started
 
+> [!WARNING]
+> The documentation is currently being restructured.
+> Some content may be incomplete or incorrect during this transition.
+
 ### Prerequisites
 
 - [Rust](https://www.rust-lang.org/tools/install) stable (1.70+)
