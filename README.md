@@ -363,6 +363,10 @@ the vulnerability disclosure policy.
 
 ---
 
+## Container Format Specification
+
+See [`SPEC.md`](SPEC.md)
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md).
@@ -376,7 +380,8 @@ The **reference implementation** (all `.rs` files, `Cargo.toml`,
 **[Apache License 2.0](LICENSE)**.
 
 The **format specification** (`spec.md`) is licensed under
-**[CC BY 4.0](LICENSE-SPEC)** — you may implement the format in any language
+**CC BY 4.0** — you may implement the format in any language
 and share implementations freely, provided you attribute the original
 specification.
+
 
