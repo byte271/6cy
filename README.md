@@ -177,16 +177,6 @@ cargo build --release
 #     b28a9d4f-5e3c-4a1b-8f2e-7c6d9b0e1a2f (zstd)
 ```
 
-### `scan` — reconstruct index from block headers
-
-```bash
-# Recover file list without the INDEX block (partial/truncated archives)
-6cy scan archive.6cy
-# Scan recovered 3 file(s) from block headers:
-#   id=00000000  chunks=3  size=12582912  name=file_00000000
-#   id=00000001  chunks=1  size=4096      name=file_00000001
-```
-
 ### `optimize` — re-compress at maximum ratio
 
 ```bash
