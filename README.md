@@ -365,7 +365,7 @@ the vulnerability disclosure policy.
 
 ## Container Format Specification
 
-See [`SPEC.md`](SPEC.md)
+See [`spec.md`](spec.md)
 
 ## Contributing
 
@@ -383,5 +383,6 @@ The **format specification** (`spec.md`) is licensed under
 **CC BY 4.0** — you may implement the format in any language
 and share implementations freely, provided you attribute the original
 specification.
+
 
 
