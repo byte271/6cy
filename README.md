@@ -130,8 +130,10 @@ cargo build --release
 
 ```bash
 # Single file, Zstd (default)
-6cy pack --output <OUTPUT> <INPUT>
+6cy pack -o archive.6cy file.bin
 
+# LZMA codec
+6cy pack a.txt --output a.6cy --codec lzma
 
 ```
 
