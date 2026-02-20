@@ -107,10 +107,6 @@ sixcy/
 
 ## Getting Started
 
-> [!WARNING]
-> The documentation is currently being restructured.
-> Some content may be incomplete or incorrect during this transition.
-
 ### Prerequisites
 
 - [Rust](https://www.rust-lang.org/tools/install) stable (1.70+)
@@ -119,8 +115,8 @@ sixcy/
 ### Build
 
 ```bash
-git clone https://github.com/byte271/6cy.git
-cd 6cy
+git clone https://github.com/cyh/sixcy.git
+cd sixcy
 cargo build --release
 # binary: target/release/6cy  (Linux/macOS)
 # binary: target\release\6cy.exe  (Windows)
@@ -134,11 +130,28 @@ cargo build --release
 
 ```bash
 # Single file, Zstd (default)
-6cy pack -o archive.6cy file.bin
+6cy pack -o archive.6cy -i file.bin
 
-# LZMA codec
-6cy pack a.txt --output a.6cy --codec lzma
+# Multiple files, LZMA codec
+6cy pack -o archive.6cy -i a.bin -i b.bin -i c.bin --codec lzma
 
+# Solid block (all inputs compressed together)
+6cy pack -o archive.6cy -i *.txt --codec zstd --solid
+
+# Encrypted (AES-256-GCM, Argon2id key derivation)
+6cy pack -o archive.6cy -i secret.bin --password "my passphrase"
+
+# Custom chunk size (default 4096 KiB = 4 MiB)
+6cy pack -o archive.6cy -i huge.bin --chunk-size 8192
+
+# Full options
+6cy pack --output archive.6cy \
+         --input file1.bin --input file2.bin \
+         --codec lzma \
+         --level 3 \
+         --chunk-size 4096 \
+         --solid \
+         --password "secret"
 ```
 
 **Available codecs:** `zstd` (default) · `lz4` · `brotli` · `lzma` · `none`
@@ -160,9 +173,9 @@ cargo build --release
 
 ```bash
 6cy list archive.6cy
-# Name                       Size    Compressed  
-# readme.txt                 4096          1024  
-# data.bin              10485760       2097152   
+# Name                       Size    Compressed  Chunks  First block hash
+# readme.txt                 4096          1024       1  a1b2c3...
+# data.bin              10485760       2097152       3  deadbe...
 ```
 
 ### `info` — archive metadata
@@ -170,14 +183,27 @@ cargo build --release
 ```bash
 6cy info archive.6cy
 # ── .6cy Archive ─────────────────────────────────────────
+#   Path           archive.6cy
 #   Format version 3
 #   UUID           550e8400-e29b-41d4-a716-446655440000
+#   Encrypted      false
 #   Index offset   41943296 B
 #   Index size     2048 B
-#   Feature Bitmap:  0000000000000000000000000000000000000000000000000000000001111000
+#   Files          5
+#   Root hash      a3f2...
 #   Required codecs (2):
 #     4a8f2e1c-9b3d-4f7a-c2e8-6d5b1a0f3c9e (lzma)
 #     b28a9d4f-5e3c-4a1b-8f2e-7c6d9b0e1a2f (zstd)
+```
+
+### `scan` — reconstruct index from block headers
+
+```bash
+# Recover file list without the INDEX block (partial/truncated archives)
+6cy scan archive.6cy
+# Scan recovered 3 file(s) from block headers:
+#   id=00000000  chunks=3  size=12582912  name=file_00000000
+#   id=00000001  chunks=1  size=4096      name=file_00000001
 ```
 
 ### `optimize` — re-compress at maximum ratio
@@ -334,12 +360,6 @@ cargo bench
 
 See [`SECURITY.md`](SECURITY.md) for the threat model, hardening details, and
 the vulnerability disclosure policy.
-
----
-
-## Container Format Specification
-
-See [`spec.md`](spec.md).
 
 ---
 
