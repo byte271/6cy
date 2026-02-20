@@ -130,28 +130,9 @@ cargo build --release
 
 ```bash
 # Single file, Zstd (default)
-6cy pack -o archive.6cy -i file.bin
+6cy pack --output <OUTPUT> <INPUT>
 
-# Multiple files, LZMA codec
-6cy pack -o archive.6cy -i a.bin -i b.bin -i c.bin --codec lzma
 
-# Solid block (all inputs compressed together)
-6cy pack -o archive.6cy -i *.txt --codec zstd --solid
-
-# Encrypted (AES-256-GCM, Argon2id key derivation)
-6cy pack -o archive.6cy -i secret.bin --password "my passphrase"
-
-# Custom chunk size (default 4096 KiB = 4 MiB)
-6cy pack -o archive.6cy -i huge.bin --chunk-size 8192
-
-# Full options
-6cy pack --output archive.6cy \
-         --input file1.bin --input file2.bin \
-         --codec lzma \
-         --level 3 \
-         --chunk-size 4096 \
-         --solid \
-         --password "secret"
 ```
 
 **Available codecs:** `zstd` (default) · `lz4` · `brotli` · `lzma` · `none`
