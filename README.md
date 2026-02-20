@@ -164,14 +164,11 @@ cargo build --release
 ```bash
 6cy info archive.6cy
 # ── .6cy Archive ─────────────────────────────────────────
-#   Path           archive.6cy
 #   Format version 3
 #   UUID           550e8400-e29b-41d4-a716-446655440000
-#   Encrypted      false
 #   Index offset   41943296 B
 #   Index size     2048 B
-#   Files          5
-#   Root hash      a3f2...
+#   Feature Bitmap:  0000000000000000000000000000000000000000000000000000000001111000
 #   Required codecs (2):
 #     4a8f2e1c-9b3d-4f7a-c2e8-6d5b1a0f3c9e (lzma)
 #     b28a9d4f-5e3c-4a1b-8f2e-7c6d9b0e1a2f (zstd)
