@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PROJECT_NAME: 6cy
+  RUST_TOOLCHAIN: stable
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          targets: ${{ matrix.target }}
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev || true
+
+      - run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package Unix
+        if: runner.os != 'Windows'
+        run: |
+          set -e
+          BIN=${{ env.PROJECT_NAME }}
+          TARGET_DIR=target/${{ matrix.target }}/release
+          mkdir -p dist
+          cp "${TARGET_DIR}/${BIN}" .
+          TAR_NAME="${BIN}-${{ matrix.target }}.tar.gz"
+          tar -czf "dist/${TAR_NAME}" "${BIN}"
+          sha256sum "dist/${TAR_NAME}" | awk '{print $1}' > "dist/${TAR_NAME}.sha256"
+        shell: bash
+
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        run: |
+          $bin = "${{ env.PROJECT_NAME }}.exe"
+          $target = "target/${{ matrix.target }}/release"
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item "$target/$bin" .
+          $zipName = "dist/${{ env.PROJECT_NAME }}-${{ matrix.target }}.zip"
+          Compress-Archive -Path $bin -DestinationPath $zipName
+          (Get-FileHash $zipName -Algorithm SHA256).Hash | Out-File "$zipName.sha256" -Encoding ascii
+        shell: pwsh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PROJECT_NAME }}-${{ matrix.target }}
+          path: dist/**
