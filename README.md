@@ -100,7 +100,7 @@ src/
 
 ## Format Version
 
-Current: **v2.0.0** (`format_version = 2`)
+Current: **v2.1.0** (`format_version = 2`)
 
 The `.6cy` format is documented in `spec.md`.
 
