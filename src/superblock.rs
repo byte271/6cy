@@ -30,6 +30,8 @@ pub enum SuperblockError {
     UnsupportedVersion(u32),
     #[error("Sentinel CRC mismatch — archive integrity compromised")]
     Crc32Mismatch,
+    #[error("Codec count {0} exceeds the superblock capacity")]
+    TooManyCodecs(usize),
     #[error("Required Zenith Codec {uuid} is absent in this build")]
     UnavailableCodec { uuid: String },
     #[error("IO Collision: {0}")]
@@ -103,6 +105,9 @@ impl Superblock {
         let codec_count = u16::from_le_bytes(buf[44..46].try_into().unwrap()) as usize;
 
         let uuid_end = 46 + codec_count * 16;
+        if uuid_end + 4 > SUPERBLOCK_SIZE {
+            return Err(SuperblockError::TooManyCodecs(codec_count));
+        }
         let mut required_codec_uuids = Vec::with_capacity(codec_count);
         for i in 0..codec_count {
             let start = 46 + i * 16;
@@ -152,5 +157,44 @@ impl Superblock {
         {
             self.required_codec_uuids.push(u);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A crafted superblock whose codec_count overruns the fixed 512-byte
+    /// buffer must be rejected, not panic on an out-of-bounds slice.
+    #[test]
+    fn read_rejects_oversized_codec_count() {
+        let mut buf = vec![0u8; SUPERBLOCK_SIZE];
+        buf[0..4].copy_from_slice(MAGIC);
+        buf[4..8].copy_from_slice(&FORMAT_VERSION.to_le_bytes());
+        buf[44..46].copy_from_slice(&u16::MAX.to_le_bytes());
+
+        match Superblock::read(std::io::Cursor::new(buf)) {
+            Err(SuperblockError::TooManyCodecs(count)) => {
+                assert_eq!(count, u16::MAX as usize);
+            }
+            other => panic!("expected TooManyCodecs, got {other:?}"),
+        }
+    }
+
+    /// The largest codec_count that still fits must not be rejected by the
+    /// bounds check (it fails later on the CRC, proving the guard is not
+    /// off-by-one and does not reject valid layouts).
+    #[test]
+    fn read_allows_max_fitting_codec_count() {
+        let max_fit = (SUPERBLOCK_SIZE - 46 - 4) / 16;
+        let mut buf = vec![0u8; SUPERBLOCK_SIZE];
+        buf[0..4].copy_from_slice(MAGIC);
+        buf[4..8].copy_from_slice(&FORMAT_VERSION.to_le_bytes());
+        buf[44..46].copy_from_slice(&(max_fit as u16).to_le_bytes());
+
+        assert!(!matches!(
+            Superblock::read(std::io::Cursor::new(buf)),
+            Err(SuperblockError::TooManyCodecs(_))
+        ));
     }
 }
